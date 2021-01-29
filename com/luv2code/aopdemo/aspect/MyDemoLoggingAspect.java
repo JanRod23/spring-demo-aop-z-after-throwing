@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -18,6 +19,19 @@ import com.luv2code.aopdemo.Account;
 @Order(2)
 public class MyDemoLoggingAspect {
 	
+	@AfterThrowing(
+				pointcut="execution(* com.luv2code.aopdemo.dao.AccountDAO.findAccounts(..))",
+				throwing="theExc")
+	public void afterThrowingFindAccountsAdvice(JoinPoint theJoinPoint, Throwable theExc) {
+		
+		// Print out which method we are advising on
+		String method = theJoinPoint.getSignature().toShortString();
+		System.out.println("\n=====>> Executing @AtferThrowing on method: " + method);
+		
+		// Log the exception
+		System.out.println("\n=====>> The exception is: " + theExc);
+	}
+	
 	// Add a new advice for @AfterReturning on the findAccounts method
 	@AfterReturning(
 			pointcut="execution(* com.luv2code.aopdemo.dao.AccountDAO.findAccounts(..))",
@@ -26,7 +40,7 @@ public class MyDemoLoggingAspect {
 		
 		// Print out which method is being advised on
 		String method = theJoinPoint.getSignature().toShortString();
-		System.out.println("\n=====>> Executing @AtferRturning on method: " + method);
+		System.out.println("\n=====>> Executing @AtferReturning on method: " + method);
 		
 		// Print out the results of the method call
 		System.out.println("\n=====>> result is: " + result);
